@@ -35,7 +35,7 @@ services:
     links:
       - db:mysql
     ports:
-      - "80:80"
+      - "8000:80"
 
 volumes:
     db_data:
