@@ -1,6 +1,8 @@
 version: '3'
 
 services:
+  
+        
   db:
     image: mysql:5.6
     volumes:
@@ -25,8 +27,24 @@ services:
     ports:
       - "8080:80"
   
+  
+
+  ciapp:
+    build: ./ciapp
+    volumes: 
+      - ./ciapp:/var/www/html/
+    depends_on:
+       - db
+    restart: always
+    links:
+      - db:mysql
+
+
   nginx:
     image: nginx:latest
+    depends_on:
+       - db
+       - ciapp
     ports:
       - "80:80"
       - "443:443"
@@ -42,18 +60,6 @@ services:
         - ./certbot/conf:/etc/letsencrypt
         - ./certbot/logs:/var/log/letsencrypt
         - ./certbot/data:/var/www/certbot
-
-  ciapp:
-    build: ./ciapp
-    volumes: 
-      - ./ciapp:/var/www/html/
-    depends_on:
-       - db
-    restart: always
-    links:
-      - db:mysql
-    ports:
-      - "80:80"
 
 volumes:
     db_data:
