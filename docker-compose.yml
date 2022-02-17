@@ -33,6 +33,9 @@ services:
     build: ./ciapp
     volumes: 
       - ./ciapp:/var/www/html/
+      - ./conf.d:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/nginx/ssl
+      - ./certbot/data:/var/www/certbot
     depends_on:
        - db
     restart: always
