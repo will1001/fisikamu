@@ -26,31 +26,20 @@ services:
       PMA_PASSWORD: admin
     ports:
       - "8080:80"
+  
+  
 
   ciapp:
     build: ./ciapp
     volumes: 
       - ./ciapp:/var/www/html/
-    working_dir: /var/www/html/
     depends_on:
-      - db
+       - db
     restart: always
     links:
-      - db:mysql   
-
-  nginx_url:
-    image: nginx:latest
-    container_name: leru_nginx
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-      # - leru-volume:/var/www/html/
-    depends_on:
-      - ciapp
-      - db
+      - db:mysql
     ports:
       - "80:80"
-
-
 
 
   # nginx:
