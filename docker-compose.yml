@@ -33,6 +33,7 @@ services:
     build: ./ciapp
     volumes: 
       - ./ciapp:/var/www/html/
+    working_dir: /var/www/html/
     depends_on:
        - db
     restart: always

@@ -1,4 +1,9 @@
 FROM php:7.0-apache
+
+COPY . /var/www/html
+
+WORKDIR /var/www/html
+
 RUN apt-get update && \
     apt-get install -y libfreetype6-dev libjpeg62-turbo-dev && \
     docker-php-ext-install mysqli && \
