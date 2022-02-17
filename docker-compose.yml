@@ -27,43 +27,30 @@ services:
     ports:
       - "8080:80"
 
-  php_fpm:
-    build:
-      context: ./
-      dockerfile: ./ciapp/Dockerfile
+  ciapp:
+    build: ./ciapp
+    volumes: 
+      - ./ciapp:/var/www/html/
     working_dir: /var/www/html/
-    container_name: leru_php_fpm
-    volumes:
-      - leru-volume:/var/www/html/
     depends_on:
       - db
-    networks:
-      - tempest
+    restart: always
+    links:
+      - db:mysql   
 
   nginx_url:
     image: nginx:latest
     container_name: leru_nginx
-    networks:
-      - tempest
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-      - leru-volume:/var/www/html/
+      # - leru-volume:/var/www/html/
     depends_on:
-      - php_fpm
+      - ciapp
       - db
     ports:
       - "80:80"
 
-  # ciapp:
-  #   build: ./ciapp
-  #   volumes: 
-  #     - ./ciapp:/var/www/html/
-  #   working_dir: /var/www/html/
-  #   depends_on:
-  #      - db
-  #   restart: always
-  #   links:
-  #     - db:mysql
+
 
 
   # nginx:
