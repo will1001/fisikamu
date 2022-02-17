@@ -24,6 +24,26 @@ services:
       PMA_PASSWORD: admin
     ports:
       - "8080:80"
+  
+  apache2:
+    build: apache2
+    hostname: fisikamu.space
+    restart: always
+    volumes_from:
+      - letsencryptstore
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      LETS_ENCRYPT_EMAIL: "wilirahmatm@email.com"
+      LETS_ENCRYPT_DOMAINS: "fisikamu.space"
+    labels:
+      io.enonic.backup.data: "/etc/letsencrypt,/var/lib/letsencrypt"
+    letsencryptstore:
+    image: busybox
+    volumes:
+      - "/etc/letsencrypt"
+      - "/var/lib/letsencrypt"
 
   ciapp:
     build: ./ciapp
