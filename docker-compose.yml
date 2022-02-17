@@ -27,8 +27,6 @@ services:
     ports:
       - "8080:80"
   
-  
-
   ciapp:
     build: ./ciapp
     volumes: 
@@ -43,6 +41,7 @@ services:
       - db:mysql
     ports:
       - "80:80"
+      - "443:443"
 
 
   # nginx:
