@@ -26,41 +26,66 @@ services:
       PMA_PASSWORD: admin
     ports:
       - "8080:80"
-  
-  
 
-  ciapp:
-    build: ./ciapp
-    volumes: 
-      - ./ciapp:/var/www/html/
+  php_fpm:
+    build:
+      context: ./
+      dockerfile: ./ciapp/Dockerfile
     working_dir: /var/www/html/
+    container_name: leru_php_fpm
+    volumes:
+      - leru-volume:/var/www/html/
     depends_on:
-       - db
-    restart: always
-    links:
-      - db:mysql
+      - db
+    networks:
+      - tempest
 
-
-  nginx:
+  nginx_url:
     image: nginx:latest
+    container_name: leru_nginx
+    networks:
+      - tempest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - leru-volume:/var/www/html/
     depends_on:
-       - db
-       - ciapp
+      - php_fpm
+      - db
     ports:
       - "80:80"
-      - "443:443"
-    volumes:
-      - ./public:/var/www/html
-      - ./conf.d:/etc/nginx/conf.d
-      - ./certbot/conf:/etc/nginx/ssl
-      - ./certbot/data:/var/www/certbot
-  certbot:
-    image: certbot/certbot:latest
-    command: certonly --webroot --webroot-path=/var/www/certbot --email wilirahmatm@gmail.com --agree-tos --no-eff-email -d fisikamu.space
-    volumes:
-        - ./certbot/conf:/etc/letsencrypt
-        - ./certbot/logs:/var/log/letsencrypt
-        - ./certbot/data:/var/www/certbot
+
+  # ciapp:
+  #   build: ./ciapp
+  #   volumes: 
+  #     - ./ciapp:/var/www/html/
+  #   working_dir: /var/www/html/
+  #   depends_on:
+  #      - db
+  #   restart: always
+  #   links:
+  #     - db:mysql
+
+
+  # nginx:
+  #   image: nginx:latest
+  #   depends_on:
+  #      - db
+  #      - ciapp
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./public:/var/www/html
+  #     - ./conf.d:/etc/nginx/conf.d
+  #     - ./certbot/conf:/etc/nginx/ssl
+  #     - ./certbot/data:/var/www/certbot
+  # certbot:
+  #   image: certbot/certbot:latest
+  #   command: certonly --webroot --webroot-path=/var/www/certbot --email wilirahmatm@gmail.com --agree-tos --no-eff-email -d fisikamu.space
+  #   volumes:
+  #       - ./certbot/conf:/etc/letsencrypt
+  #       - ./certbot/logs:/var/log/letsencrypt
+  #       - ./certbot/data:/var/www/certbot
 
 volumes:
     db_data:
